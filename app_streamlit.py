@@ -1,11 +1,15 @@
 import streamlit as st
 import numpy as np
 import pickle
+import os
 
-# Load model + scaler
-model = pickle.load(open("parkinsons_model.sav", "rb"))
-scaler = pickle.load(open("scaler.sav", "rb"))
+# ---------- Load model safely ----------
+BASE_DIR = os.path.dirname(__file__)
 
+model = pickle.load(open(os.path.join(BASE_DIR, "parkinsons_model.sav"), "rb"))
+scaler = pickle.load(open(os.path.join(BASE_DIR, "scaler.sav"), "rb"))
+
+# ---------- UI ----------
 st.title("🧠 Parkinson Disease Prediction App")
 st.write("Enter voice features in the sidebar")
 
@@ -18,7 +22,7 @@ for i in range(22):
     val = st.sidebar.number_input(f"Feature {i+1}", value=0.0)
     features.append(val)
 
-# Predict button
+# ---------- Prediction ----------
 if st.button("Predict"):
     input_array = np.array(features).reshape(1, -1)
     input_scaled = scaler.transform(input_array)
